@@ -1,0 +1,19 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media
+
+### macOS ###
+*.DS_Store
+
+### SQL migrate local ###
+contenttype.json
+everything_else.json
+datadump.json
+
+### Heroku ignore (due to auto collectstatic) ###
+assets
