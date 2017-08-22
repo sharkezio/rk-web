@@ -15,21 +15,25 @@ import os
 # from django.conf import global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6l2+&-aj=tf0&be37_%4rc1!&td=o_o@s&vc2ptl2n97a#lm4l'
+# SECRET_KEY = '6l2+&-aj=tf0&be37_%4rc1!&td=o_o@s&vc2ptl2n97a#lm4l'
 # SECRET_KEY = os.environ['SECRET_KEY']  # for deploy
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 DEBUG = False  # for deploy
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+# Allow all host headers
+# ALLOWED_HOSTS = ['*']
 
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -102,18 +106,23 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 #     }
 # }
 
-# Postgresql
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_restaurant',
-        'USER': 'shark',
-        'PASSWORD': '6014',
-        'HOST': '',
-        'PORT': '',
-        # 'TEST': {'NAME': 'test_db_restaurant'},
-    }
-}
+# # Postgresql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'db_restaurant',
+#         'USER': 'shark',
+#         'PASSWORD': '6014',
+#         'HOST': '',
+#         'PORT': '',
+#         # 'TEST': {'NAME': 'test_db_restaurant'},
+#     }
+# }
+
+# DATABASES = {'default': dj_database_url.config(
+#     default='postgres://localhost')}
+
+# DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -135,11 +144,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+# STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATIC_ROOT = 'staticfiles'
+
 STATIC_URL = '/static/'
 
-STATIC_DIRS = os.path.join(BASE_DIR, 'static')
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 SESSION_SERIALIZER = ('django.contrib.sessions.serializers' +
                       '.PickleSerializer')
@@ -151,47 +163,3 @@ SESSION_SERIALIZER = ('django.contrib.sessions.serializers' +
 LOGIN_REDIRECT_URL = "/index/"
 
 # FIXTURE_DIRS = os.path.join(BASE_DIR, 'fixtures')
-
-# -----settings for production-----
-# mail backend service for production
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'wmsback@gmail.com'
-EMAIL_HOST_PASSWORD = 'backlight'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'required_debug_false': {  # filter only debug is false
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        # mail to administrator when msg is error and debug != false
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['required_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        # django.request would set server error to ERROR
-        # 400, 404 level WARNING
-        # mail_admins handler would deal with level > ERROR
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': 'True',
-        },
-    }
-}
-
-ADMINS = (  # error 500
-    ('admin1', 'wemism27@gmail.com'),
-)
-
-MANAGERS = (  # error 404
-    ('manager1', 'manager1@gmail.com'),
-)
