@@ -4,9 +4,9 @@ import os
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 
-DATABASES['default'] = dj_database_url.config()
-# DATABASES = {'default': dj_database_url.config(
-#     default='postgres://localhost')}
+# DATABASES['default'] = dj_database_url.config()
+DATABASES = {'default': dj_database_url.config(
+    default='postgres://localhost')}
 
 SECRET_KEY = os.environ['SECRET_KEY']  # for deploy
 
