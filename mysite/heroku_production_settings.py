@@ -65,5 +65,5 @@ ADMINS = (  # error 500
 )
 
 MANAGERS = (  # error 404
-    ('manager1', 'manager1@gmail.com'),
+    ('manager1', 'wemism27@gmail.com'),
 )
