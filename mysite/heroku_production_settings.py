@@ -70,7 +70,9 @@ LOGGING = {
 # ADMINS = (  # error 500
 #     ('wemism', 'wemism27@gmail.com'),
 # )
-ADMINS = os.environ.get('ADMINS')  # error 500 mail
+ADMINS = (  # error 500 mail
+    (os.environ.get('ADMIN1_NAME'), os.environ.get('ADMIN1_MAIL')),
+)
 
 # MANAGERS = (  # error 404
 #     ('wemism', 'wemism27@gmail.com'),
