@@ -48,8 +48,8 @@ LOGGING = {
     'handlers': {
         # mail to administrator when msg is error and debug != false
         'mail_admins': {
-            # 'level': 'ERROR',
-            'level': 'WARNING',
+            'level': 'ERROR',
+            # 'level': 'WARNING',
             'filters': ['required_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
@@ -60,8 +60,8 @@ LOGGING = {
         # mail_admins handler would deal with level > ERROR
         'django.request': {
             'handlers': ['mail_admins'],
-            # 'level': 'ERROR',
-            'level': 'WARNING',
+            'level': 'ERROR',
+            # 'level': 'WARNING',
             'propagate': 'True',
         },
     }
