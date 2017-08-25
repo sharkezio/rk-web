@@ -35,6 +35,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # for deploy
 # EMAIL_HOST_PASSWORD = 'uvcirpodxateyhtp'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # for deploy
+EMAIL_USE_TLS = True
 
 LOGGING = {
     'version': 1,
@@ -47,7 +48,8 @@ LOGGING = {
     'handlers': {
         # mail to administrator when msg is error and debug != false
         'mail_admins': {
-            'level': 'ERROR',
+            # 'level': 'ERROR',
+            'level': 'WARNING',
             'filters': ['required_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
@@ -58,18 +60,19 @@ LOGGING = {
         # mail_admins handler would deal with level > ERROR
         'django.request': {
             'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            # 'level': 'ERROR',
+            'level': 'WARNING',
             'propagate': 'True',
         },
     }
 }
 
 # ADMINS = (  # error 500
-#     ('admin', 'wemism27@gmail.com'),
+#     ('wemism', 'wemism27@gmail.com'),
 # )
 ADMINS = os.environ.get('ADMINS')  # error 500 mail
 
 # MANAGERS = (  # error 404
-#     ('manager1', 'wemism27@gmail.com'),
+#     ('wemism', 'wemism27@gmail.com'),
 # )
 MANAGERS = os.environ.get('MANAGERS')  # error 404 mail
