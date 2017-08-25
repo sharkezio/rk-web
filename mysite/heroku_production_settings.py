@@ -75,4 +75,4 @@ ADMINS = os.environ.get('ADMINS')  # error 500 mail
 # MANAGERS = (  # error 404
 #     ('wemism', 'wemism27@gmail.com'),
 # )
-MANAGERS = os.environ.get('MANAGERS')  # error 404 mail
+MANAGERS = ADMINS  # error 404 mail
