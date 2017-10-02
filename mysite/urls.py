@@ -64,7 +64,8 @@ urlpatterns = [
     # url(r'^menu/(?P<id>\d{1,5})/$', restaurants.views.menu),
 
     url(r'^restaurants_list/$',
-        login_required(restaurants.views.RestaurantsView.as_view())),
+        login_required(restaurants.views.RestaurantsView.as_view()),
+        name='restaurants-list'),
     # url(r'^restaurants_list/$',
     #     login_required(restaurants.views.list_restaurants)),
     # url(r'^restaurants_list/$', restaurants.views.list,
@@ -75,19 +76,35 @@ urlpatterns = [
     # url(r'^users_list/$', restaurants.views.list,
     #     {'model': auth.models.User}),
 
-    url(r'^comment/(?P<pk>\d+)/$', restaurants.views.CommentView.as_view()),
+    url(r'^comment/(?P<pk>\d+)/$',
+        restaurants.views.CommentView.as_view(), name='comment-view'),
     # url(r'^comment/(?P<restaurant_id>\d{1,5})/$', restaurants.views.comment),
     # url(r'^comment/(\d{1,5})/$', restaurants.views.comment),
 
-    # url(r'^accounts/login/$', login, {'template_name': 'login.html'}),
-    url(r'^accounts/login/$', django.contrib.auth.views.login),
-    url(r'^accounts/logout/$', django.contrib.auth.views.logout),
+    url(r'^accounts/login/$', views.custom_login, name='accounts-login'),
+    # url(r'^accounts/login/$', django.contrib.auth.views.login),
+    # url(r'^accounts/login/$', views.custom_login),
+    url(r'^accounts/logout/$', django.contrib.auth.views.logout,
+        name='accounts-logout'),
+    # url(r'^accounts/logout/$', views.logout, name='accounts-logout'),
+
 
     url(r'^welcome/$', views.welcome),
+
+    url(r'^vote/$', restaurants.views.vote),
+
+    url(r'^update/comment/(?P<pk>\d+)/$',
+        restaurants.views.CommentUpdate.as_view(), name='comment-update'),
+
+    url(r'^delete/comment/(?P<pk>\d+)/$',
+        restaurants.views.CommentDelete.as_view(), name='comment-delete'),
     # url(r'^index/$', views.index),
     # url(r'^index/$', views.IndexView.as_view()),
-    url(r'^index/$',
-        TemplateView.as_view(template_name='index.html')),
+    # url(r'^index/$',
+    #     TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'^$',
+        TemplateView.as_view(template_name='index.html'), name='index'),
+
     url(r'^accounts/register/$', views.register)
 ]
 

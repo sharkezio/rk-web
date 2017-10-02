@@ -17,3 +17,6 @@ datadump.json
 
 ### Heroku ignore (due to auto collectstatic) ###
 assets
+
+### clipboard ###
+clipboard.temp

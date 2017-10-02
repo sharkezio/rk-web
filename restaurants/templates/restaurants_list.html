@@ -1,109 +1,50 @@
-<!doctype html>
-<html>
-    <head>
-        <title> Restaurants </title>
-        <meta charset='utf-8'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-        <style>
-        th { text-align: center; }
-        div.center_padding {
-            text-align: center;
-            padding: 128px 15px;
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %} Restaurants {% endblock %}
+
+{% block css %}
+    <style>
+        .icon-24 {
+            height: 24px;
+            width: 24px;
         }
+    </style>
+{% endblock %}
 
-        </style>
-    </head>
-    <body>
+{% block content %}
 
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">MySite</a>
-                </div>
-                <!--div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div--><!--/.nav-collapse -->
-            </div>
-        </nav>
-
-        <div class="container">
-            <div class="center_padding">
                 <h2>餐廳列表</h2>
                 <!-- <form action="/menu/" method="get"> -->
+                <br>
                 <table class="table table-hover">
                     <tr>
-                        <th>選取</th>
+                        <th>菜單</th>
                         <th>店名</th>
                         <th>電話</th>
                         <th>地址</th>
+                        <th>評價</th>
+<!--
                         {% if perms.restaurants.can_comment %}
-                             <th>評價</th>
+                            <th>評價</th>
                         {% endif %}
+-->
                     </tr>
                     {% for r in restaurants %}
                     <tr>
                         <!-- <td> <input type="radio" name="id" value="{{r.id}}"> </td> -->
-                        <td><a href="/menu/{{r.id}}/">看菜單</td>
-                        <td> {{ r.name }} </td>
-                        <td> {{ r.phone_number }} </td>
-                        <td> {{ r.address }} </td>
-                        <!-- <td> <a href="/comment/{{r.id}}/"> 評價 </a> </td> -->
+                        <td><a href="/menu/{{r.id}}/" title="Menu link"><img src="{% static 'menu/menu-link.png' %}" alt="Menu Link" class="icon-24"></a></td>
+                        <td> {{ r.name }}</td>
+                        <td><a href="tel:{{ r.phone_number }}"><img src="{% static 'phone/phone-link.png' %}" alt="Phone Link" class="icon-24"/></a> {{ r.phone_number }}</td>
+                        <td><a target="_blank" href="http://maps.google.com.tw/maps?q={{ r.address }}" title="Google Map link"><img src="{% static 'map/map-link.png' %}" alt="Map Link" class="icon-24"></a> {{ r.address }}</td>
+                        <td><a href="/comment/{{r.id}}" title="Comment link"><img src="{% static 'comment/comment-link.png' %}" alt="Map Link" class="icon-24"></a> {{ r.comment_set.all|length }}條評價</td>
+<!--
                         {% if perms.restaurants.can_comment %}
-                            <td><a href="/comment/{{r.id}}">
-                                comment</a></td>
-                        {% endif %}
+                            <td><a href="/comment/{{r.id}}">comment</a></td>           
+                        {% endif %}           
+-->
                     </tr>
                     {% endfor %}
                 </table>
                 <!-- <input type="submit" value="觀看menu" class="btn btn-default">
                 </form> -->
-            </div>
-        </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    </body>
-</html>
-<!--original page without bootstrap-->
-<!--<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Restaurants</title>
-</head>
-<body>
-    <h2>餐廳列表</h2>
-    <form action="/menu/" method="get">
-        <table>
-            <tr>
-                <th>選取</th>
-                <th>店名</th>
-                <th>地址</th>
-                <th>電話</th>
-                <th>評價</th>
-            </tr>
-            {% for r in restaurants %}
-            <tr>
-                <td> <input type="radio" name="id" value="{{r.id}}"> </td>
-                <td> {{ r.name }} </td>
-                <td> {{ r.phone_number }} </td>
-                <td> {{ r.address }} </td>
-                <td> <a href="/comment/{{r.id}}/">評論</a></td>
-            </tr>
-            {% endfor %}
-        </table>
-        <input type="submit" value="觀看menu">
-    </form>
-</body>
-</html>-->
+{% endblock %}

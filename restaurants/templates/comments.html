@@ -1,60 +1,108 @@
-<!doctype html>
-<html>
-    <head>
-        <title> Comment </title>
-        <meta charset='utf-8'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-        <style>
-        th { text-align: center; }
-        div.center_padding {
-            text-align: center;
-            padding: 128px 15px;
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %} Comment {% endblock %}
+
+{% block css %}
+    <style>
+        .icon-in-button {
+            padding: 2px 0px;
+            width: 73px;
         }
+        .icon-16 {
+            height: 16px;
+            width: 16px;
+        }
+        .icon-32 {
+            height: 32px;
+            width: 32px;
+        }
+    </style>
+{% endblock %}
 
-        </style>
-    </head>
-    <body>
-
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">MySite</a>
-                </div>
-                <!--div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div--><!--/.nav-collapse -->
-            </div>
-        </nav>
-
-        <div class="container">
-            <div class="center_padding">
+{% block content %}
+                <a href="#add-comment" class="mvdot"><img src="{% static 'comment/add-comment.png' %}" alt="add-comment" height="88" width="88"></a>
                 <h2>{{ r.name }}的評價</h2>
                 {% if r.comment_set.all %}
                 <p>目前共有{{ r.comment_set.all|length }}條評價</p>
-                <table class="table table-hover">
+                <table class="table table-hover" style="table-layout: fixed;word-break: break-all;">
                     <tr>
-                        <th>留言者</th>
-                        <th>時間</th>
-                        <th>評價</th>
+                        <th style="width:7%"></th>
+                        <th style="width:20%">留言者</th>
+                        <th style="width:20%">時間</th>
+                        <th style="width:45%">評價</th>
+                        <th style="width:8%"></th>
                     </tr>
+                    
+                    <img style="display:none" src="{% static 'vote/vote-down-off.png' %}" class="icon-32"/>
+                    <img style="display:none" src="{% static 'vote/vote-down-on.png' %}" class="icon-32"/>
+                    <img style="display:none" src="{% static 'vote/vote-up-off.png' %}" class="icon-32"/>
+                    <img style="display:none" src="{% static 'vote/vote-up-on.png' %}" class="icon-32"/>
+                    
                     {% for c in r.comment_set.all %}
                     <tr>
+                        <td>
+                            <!-- .votebuttons -->
+                            <div class="vote-buttons">
+                            <p>
+
+                            {% ifequal c.thisUserUpVote 0 %}
+<!--                            thisUserUpVote-->
+                                <img class="vote-up {{ c.id }} icon-32" comment-id="{{ c.id }}"  src="{% static 'vote/vote-up-off.png' %}" title="Vote this thread UP. (click again to undo)" />
+                            {% else %}
+                                <img class="vote-up selected {{ c.id }} icon-32" comment-id="{{ c.id }}" src="{% static 'vote/vote-up-on.png' %}" title="Vote this thread UP. (click again to undo)" />
+                            {% endifequal %}
+                            </p>
+
+                            <div class="vote-tally" style="font-size:1.5em;margin-bottom:8px;font-weight:bold;color:dimgrey;">
+                                <span class="num {{c.id}}">{{ c.get_total_votes }}</span>
+<!--                            <span class="num">{{ num_votes }}</span>-->
+                            </div>
+
+                            <p>
+                            {% ifequal c.thisUserDownVote 0 %}
+<!--                            thisUserDownVote-->
+                                <img class="vote-down {{ c.id }} icon-32" comment-id="{{ c.id }}" src = "{% static 'vote/vote-down-off.png' %}" title="Vote this thread DOWN if it is innapropriate or incorrect. (click again to undo)" />
+                            {% else %}
+                                <img class="vote-down selected {{ c.id }} icon-32" comment-id="{{ c.id }}" src = "{% static 'vote/vote-down-on.png' %}" title="Vote this thread DOWN if it is innapropriate or incorrect. (click again to undo)" />
+                            {% endifequal %}
+                            </p>
+                            </div>
+                            <!-- .votebuttons -->
+                        </td>
+<!--
+                        <td> {{ c.this_user_up_vote }} </td>
+                        <td> {{ c.this_user_down_vote }} </td>                  
+-->
+<!--
+                        <td> {{ c.thisUserUpVote }} </td>
+                        <td> {{ c.thisUserDownVote }} </td>
+-->
+<!--                        <td> {{ c.num_votes }} </td>-->
+<!--
+                        <td> {{ thisUserUpVote }} </td>
+                        <td> {{ thisUserDownVote }} </td>
+-->
+<!--                        <td> {{ c.get_total_votes }} </td>-->
+<!--                        <td> {{ num_votes }} </td>-->
+<!--                        <td> {{ c.id }} </td>-->
                         <td> {{ c.visitor }} </td>
-                        <td> {{ c.date_time | date:"F j, Y" }} </td>
-                        <td> {{ c.content }} </td>
+<!--                        <td> {{ c.date_time | date:"F j, Y" }} </td>-->
+                        <td> {{ c.date_time | date:"Y年n月j日 H:i" }} </td>
+                        <td style="word-wrap:break-word;"> {{ c.content }} </td>
+                        {% if request.user.is_authenticated and c.visitor == request.user.username %}
+                            <td>
+                                <a href="{% url 'comment-update' c.id %}" class="btn btn-warning icon-in-button" title="Comment Update link"><img src="{% static 'comment/edit.png' %}" alt="edit" class="icon-16">&nbsp;Edit</a><br><br>
+                                <form action="{% url 'comment-delete' c.id %}" method="post">{% csrf_token %}
+<!--                                <input type="submit" class="btn btn-danger confirm-delete" value="Delete" style="padding-top: 2px;padding-bottom: 2px; width: 70px">-->
+                                <button type="submit" class="btn btn-danger icon-in-button confirm-delete"><img src="{% static 'comment/delete.png' %}" alt="delete" class="icon-16">&nbsp;Delete</button>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
+                    
                 </table>
                 {% else %}
                 <p>無評價</p>
@@ -66,61 +114,249 @@
                     <p style="color:red;">{{ e }}</p>
                 {% endfor %}
 
+<!--
                 {% if form.errors %}
                     <p style="color:red;">
                         請依提示修復表單錯誤
                     </p>
                 {% endif %}
+-->
 
-                <form action="" method="post" class="form-horizontal" role="form" style="width:33%; margin:auto; text-align:left">{% csrf_token %}
+                <form id="add-comment" action="" method="post" class="form-horizontal" role="form" style="width:25%;margin:auto;text-align:left">{% csrf_token %}
                     <table>
-                        <!--<tr>
-                            <tr><label for="visitor">留言者:</label></tr>
-                            <tr><input id="visitor" type="text" name="visitor" class="form-control" value="{{visitor}}"></tr>
-                        </tr>
-                        <tr>
-                            <tr><label for="email">電子信箱:</label></tr>
-                            <tr><input id="email" type="text" name="email" class="form-control" value="{{email}}"></tr>
-                        </tr>
-                        <tr>
-                            <tr><label for="content">評價:</label></tr>
-                            <tr><textarea id="content" rows="10" cols="48" name="content" class="form-control">{{content}}</textarea></tr>
-                        </tr>-->
                         <tr>
                             <th style="text-align:left"><label for="id_visitor">留言者：</label></th>
+                        </tr>
+                        <tr>
                             <td>{{ form.visitor }}</td>
-                            <td>{{ form.visitor.errors }}</td>
+                        </tr>
+                        <tr>
+                            <td style="color:red">{{ form.visitor.errors }}</td>
+                        </tr>
+                        <tr>
+                            <td><br></td>
                         </tr>
                         <tr>
                             <th style="text-align:left"><label for="id_email">電子信箱：</label></th>
+                        </tr>
+                        <tr>
                             <td>{{ form.email }}</td>
-                            <td>{{ form.email.errors }}</td>
+                        </tr>
+                        <tr>
+                            <td style="color:red">{{ form.email.errors }}</td>
+                        </tr>
+                        <tr>
+                            <td><br></td>
                         </tr>
                         <tr>
                             <th style="text-align:left"><label for="id_content">評價：</label></th>
-                            <td>{{ form.content }}</td>
-                            <td>{{ form.content.errors }}</td>
                         </tr>
-                        <!--{{ f.as_table }}-->
+                        <tr>
+                            <td>{{ form.content }}</td>
+                            <td style="color:red">{{ form.content.errors }}</td>
+                        </tr>
+                        <tr>
+                            <td><br></td>
+                        </tr>
+                        <tr>
+                            <td><input type="submit" style="display: block;margin: auto" value="給予評價" class="btn btn-default"></td>
+                        </tr>
                     </table>
-                    <!--<div class="form-group">
-                    <label for="visitor">留言者:</label>
-                    <input id="visitor" type="text" name="visitor" class="form-control">
-                    </div>
-                    <div class="form-group">
-                    <label for="email">電子信箱:</label>
-                    <input id="email" type="text" name="email" class="form-control">
-                    </div>
-                    <div class="form-group">
-                    <label for="content">評價:</label>
-                    <textarea id="content" rows="10" cols="48" name="content" class="form-control"></textarea>
-                    </div>-->
-                    <input type="submit" value="給予評價" class="btn btn-default">
                 </form>
-            </div>
-        </div>
+        <!-- .votebuttons -->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    </body>
-</html>
+        
+
+        <!-- .votebuttons -->
+{% endblock %}
+
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script>
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+    
+    $(document).ready(function() {
+        
+        $('div.bg').removeClass()
+        
+        $('.confirm-delete').click(function() {
+            return confirm('Are you sure you want to delete this comment?');
+        })
+//        var $csrfToken = $('input[name="csrfmiddlewaretoken"]');
+//        var token = $csrfToken.val();
+
+//        function isInt(value) {
+//            var x;
+//            return isNaN(value) ? !1 : (x = parseFloat(value), (0 | x) === x);
+//        }
+        $("div.vote-buttons img.vote-up").hover(
+            
+            function () { 
+                var id = $(this).attr("comment-id");
+
+                if (!$('.vote-down[comment-id="'+ id +'"]').hasClass('selected')) {
+                    if ($(this).hasClass('selected')) {            
+                        $(this).attr('src', '{% static 'vote/vote-up-off.png' %}'); 
+                    }else{
+                        $(this).attr('src', '{% static 'vote/vote-up-on.png' %}');
+                    }
+                }
+            },
+            function () { 
+                var id = $(this).attr("comment-id");
+
+                if (!$('.vote-down[comment-id="'+ id +'"]').hasClass('selected')) {
+                    if ($(this).hasClass('selected')) {            
+                        $(this).attr('src', '{% static 'vote/vote-up-on.png' %}'); 
+                    }else{
+                        $(this).attr('src', '{% static 'vote/vote-up-off.png' %}');
+                    }
+                }
+                //id為Img1的標籤，hover(移入,移出)
+                //移入時將this()的屬性 attr 中src，改為room2.jpg
+                //移出時將this()的屬性 attr 中src，改為room1.jpg
+            }
+        );
+
+        $("div.vote-buttons img.vote-down").hover(
+            
+            function () { 
+                var id = $(this).attr("comment-id");
+
+                if (!$('.vote-up[comment-id="'+ id +'"]').hasClass('selected')) {
+                    if ($(this).hasClass('selected')) {            
+                        $(this).attr('src', '{% static 'vote/vote-down-off.png' %}'); 
+                    }else{
+                        $(this).attr('src', '{% static 'vote/vote-down-on.png' %}');
+                    }
+                }
+            },
+            function () { 
+                var id = $(this).attr("comment-id");
+
+                if (!$('.vote-up[comment-id="'+ id +'"]').hasClass('selected')) {
+                    if ($(this).hasClass('selected')) {            
+                        $(this).attr('src', '{% static 'vote/vote-down-on.png' %}'); 
+                    }else{
+                        $(this).attr('src', '{% static 'vote/vote-down-off.png' %}');
+                    }
+                }
+                //id為Img1的標籤，hover(移入,移出)
+                //移入時將this()的屬性 attr 中src，改為room2.jpg
+                //移出時將this()的屬性 attr 中src，改為room1.jpg
+            }
+        );
+       
+        var check_Login_Result = "{{request.user.is_authenticated}}";
+        
+        $('div.vote-buttons img.vote-up').click(function() {
+            if (check_Login_Result != "True"){
+//                alert('None Login User|{{request.user.id}}|{{request.user}}');
+                alert('Please login to vote!!');
+                $(location).attr('href', '{% url 'accounts-login' %}')
+//                $(location).attr('href', '{% url 'accounts-login' %}?next={{request.path}}') //redirect to previous page after login
+            }else{
+//                alert('Login User|{{request.user.id}}|{{request.user}}');            
+                var id = $(this).attr("comment-id");
+
+    //            if (!$('div.vote-buttons img.vote-down.'+id).hasClass('selected')) {
+                if (!$('.vote-down[comment-id="'+ id +'"]').hasClass('selected')) {
+
+    //                var id = $(this).attr("comment-id");
+    //                {{thread.id}}
+    //                var id = {{r.comment_set.id}};
+    //                var id = {{c.id}};
+    //                var id = 23;//23,29,30
+                    var vote_type = 'up';
+
+    //                 $('.vote-down[comment-id="'+ id +'"]')
+
+                    if ($(this).hasClass('selected')) {
+
+                        var vote_action = 'recall-vote';
+    //                    $.post('/vote/', {id:id, type:vote_type, action:vote_action, csrfmiddlewaretoken: token});
+                        $.post('/vote/', {id:id, type:vote_type, action:vote_action});
+                        $('img.vote-up.'+id).removeAttr('src')
+                            .attr('src', '{% static 'vote/vote-up-off.png' %}')
+                            .removeClass('selected');
+    //                    $('div.vote-tally span.num').html(response);
+                        var $num = $('div.vote-tally span.num.'+id);
+                        var num = parseInt($num.text(), 10);
+                        $num.html(num - 1);
+
+                    } else {
+
+                        var vote_action = 'vote';
+    //                    $.post('/vote/', {id:id, type:vote_type, action:vote_action, csrfmiddlewaretoken: token}); 
+                        $.post('/vote/', {id:id, type:vote_type, action:vote_action}); 
+                        $('img.vote-up.'+id).removeAttr('src')
+                            .attr('src', '{% static 'vote/vote-up-on.png' %}')
+                            .addClass('selected');
+
+                        var $num = $('div.vote-tally span.num.'+id);
+                        var num = parseInt($num.text(), 10);
+                        $num.html(num + 1);
+
+                    }
+                }
+            }
+        });
+
+
+        $('div.vote-buttons img.vote-down').click(function() {
+            if (check_Login_Result != "True"){
+//                alert('None Login User|{{request.user.id}}|{{request.user}}');
+                alert('Please login to vote!!');
+                $(location).attr('href', '{% url 'accounts-login' %}')
+//                $(location).attr('href', '{% url 'accounts-login' %}?next={{request.path}}') //redirect to previous page after login
+            }else{
+//                alert('Login User|{{request.user.id}}|{{request.user}}');    
+                var id = $(this).attr("comment-id");
+
+    //            if (!$('div.vote-buttons img.vote-up.'+id).hasClass('selected')) {
+                if (!$('.vote-up[comment-id="'+ id +'"]').hasClass('selected')) {
+    //                '.vote-down[comment-id="'+ id +'"]'
+    //                var id = {{r.comment_set.id}};
+    //                var id = {{c.id}};
+    //                var id = 23;//23,29,30
+                    var vote_type = 'down';
+
+                    if ($(this).hasClass('selected')) {
+
+                        var vote_action = 'recall-vote';
+                        $.post('/vote/', {id:id, type:vote_type, action:vote_action});
+
+                        $('img.vote-down.'+id).removeAttr('src')
+                            .attr('src', '{% static 'vote/vote-down-off.png' %}')
+                            .removeClass('selected');
+            //            $('div.vote-tally span.num').html(response);
+                        var $num = $('div.vote-tally span.num.'+id);
+                        var num = parseInt($num.text(), 10);
+                        $num.html(num + 1);
+
+                    } else {
+
+                        var vote_action = 'vote';
+                        $.post('/vote/', {id:id, type:vote_type, action:vote_action}); 
+
+                        $('img.vote-down.'+id).removeAttr('src')
+                            .attr('src', '{% static 'vote/vote-down-on.png' %}')
+                            .addClass('selected');
+
+                        var $num = $('div.vote-tally span.num.'+id);
+                        var num = parseInt($num.text(), 10);
+                        $num.html(num - 1);
+
+                    }
+                }
+            }
+        });     
+        
+//        alert('reach the end|{{request.path}}');
+    });
+    
+</script>
+{% endblock %}

@@ -1,81 +1,17 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
+{% load staticfiles %}
 {% block title %} 首頁 {% endblock %}
-{% block h2 %} 餐廳王 {% endblock %}
 
 {% block content %}
-    <h2>Welcome to restaurant king</h2>
-{% endblock %}
-<!-- <!doctype html>
-<html>
-    <head>
-        <title> Restaurant King </title>
-        <meta charset='utf-8'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-        <style>
-        th { text-align: center; }
-        div.center_padding {
-            text-align: center;
-            padding: 128px 15px;
-        }
-
-        </style>
-    </head>
-    <body>
-
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">MySite</a>
-                </div>
-            </div>
-        </nav>
-
-        <div class="container">
-            <div class="center_padding">
-                <h2>歡迎來到餐廳王</h2>
-                {% if request.user.is_authenticated %}
-                <p>
-                    {{request.user}} 您已經登入囉
-                    <a href="/accounts/logout/">登出</a>
-                </p>
-                <a href="/restaurants_list/">餐廳列表</a>
-                {% else %}
-                <p>您尚未登入喔~<a href="/accounts/login/">登入</a></p>
-                {% endif %}
-                <p>若人還沒有帳號，請<a href="/accounts/register/">註冊</a></p>
-            </div>
-        </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    </body>
-</html>  -->
-
-<!--original without bootstrap-->
-<!--<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Restaurant King</title>
-</head>
-<body>
-    <h2>歡迎來到餐廳王</h2>
+    <div><img src="{% static 'favicons/android-chrome-512x512.png' %}" alt="restaurant king" height="128" width="128"></div>
+    <br>
+    <h1>歡迎來到餐廳王</h1>
+    <br>
     {% if request.user.is_authenticated %}
-        <p>
-            {{ request.user }} 您已經登入囉 ~
-            <a href="/accounts/logout/">登出</a>
-        </p>
-        <a href="/restaurants_list/">餐廳列表</a>
+        <a href="/restaurants_list/"><p class="fontSize18"><strong>餐廳列表</strong></p></a>
     {% else %}
-        <p>您尚未登入喔～<a href="/accounts/login/">登入</a></p>
+        <p class="fontSize18">您尚未登入喔~<a href="/accounts/login/"><strong>登入</strong></a></p>
+        <p class="fontSize18">若您還沒有帳號，請<a href='/accounts/register/'><strong>註冊</strong></a></p>
+        <p class="fontSize18">（可使用guest/guest參觀！）</p>
     {% endif %}
-</body>
-</html>-->
+{% endblock %}

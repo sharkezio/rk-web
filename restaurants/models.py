@@ -1,6 +1,8 @@
 from django.db import models
 from django.db import connection
 
+from django.contrib.auth.models import User
+
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=20)
@@ -69,8 +71,44 @@ class Comment(models.Model):
     date_time = models.DateTimeField()
     restaurant = models.ForeignKey(Restaurant)
 
+    userUpVotes = models.ManyToManyField(
+        User, blank=True, related_name='threadUpVotes')
+    userDownVotes = models.ManyToManyField(
+        User, blank=True, related_name='threadDownVotes')
+
+    thisUserUpVote = models.BooleanField(default=False)
+    thisUserDownVote = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.content
+
+    def get_total_votes(self):
+        total = self.userUpVotes.count() - self.userDownVotes.count()
+        # total = 10
+        return int(total)
+
+    # def this_user_up_vote(self):
+    #     thisUserUpVote = self.userUpVotes.filter(
+    #         id=self.request.user.id).count()
+    #     print "this_user_up_vote = ", thisUserUpVote
+    #     return int(thisUserUpVote)
+
+    # def this_user_down_vote(self):
+    #     thisUserDownVote = self.userDownVotes.filter(
+    #         id=self.request.user.id).count()
+    #     print "this_user_down_vote = ", thisUserDownVote
+    #     return int(thisUserDownVote)
+
     class Meta:
-        ordering = ['date_time']
+        # ordering = ['date_time']
+        ordering = ['id']
         permissions = (
-            ("can comment", "Can comment"),
+            ("can_comment", "Can comment"),
         )
+
+# class Thread(models.Model):
+#     # ...
+#     userUpVotes = models.ManyToManyField(
+#         User, blank=True, related_name='threadUpVotes')
+#     userDownVotes = models.ManyToManyField(
+#         User, blank=True, related_name='threadDownVotes')

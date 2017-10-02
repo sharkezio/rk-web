@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, get_object_or_404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
@@ -11,7 +11,9 @@ from django.contrib.auth.decorators import (login_required,
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, DeleteView, UpdateView
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.exceptions import PermissionDenied
 
 from restaurants.models import Restaurant, Comment, Food
 from restaurants.forms import CommentForm
@@ -37,8 +39,28 @@ def list_users(request):
 
 
 def user_can_comment(user):
-    return (user.is_authenticated and
+    return (user.is_authenticated() and
             user.has_perm('restaurants.can_comment'))
+
+
+class PermissionMixin(object):
+
+    def get_object(self, *args, **kwargs):
+        obj = super(PermissionMixin, self).get_object(*args, **kwargs)
+        if not obj.visitor == str(self.request.user):
+            # a = obj.visitor
+            # b = str(self.request.user)
+            # print "a", a
+            # print "b", b
+            # print "a == b", a == b
+            # print "a is b", a is b
+            # print "obj.visitor = ", obj.visitor
+            # print "request.user = ", self.request.user
+            # print "==", obj.visitor == self.request.user
+            # print "is", obj.visitor is self.request.user
+            raise PermissionDenied()
+        else:
+            return obj
 
 
 class MenuView(DetailView):
@@ -50,6 +72,7 @@ class MenuView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         return super(MenuView, self).dispatch(request, *args, **kwargs)
 
+    # for redirect
     def get(self, request, pk, *args, **kwargs):
         try:
             return super(MenuView, self).get(self, request, pk=pk,
@@ -69,15 +92,6 @@ class MenuView(DetailView):
 #         return HttpResponseRedirect("/restaurants_list/")
 
 
-def meta(request):
-    values = request.META.items()
-    values.sort()
-    html = []
-    for k, v in values:
-        html.append('<tr><td>{0}</td><td>{1}</td></tr>'.format(k, v))
-    return HttpResponse('<table>{0}</table>'.format('\n'.join(html)))
-
-
 class RestaurantsView(ListView):
     model = Restaurant
     template_name = 'restaurants_list.html'
@@ -95,14 +109,173 @@ class RestaurantsView(ListView):
 #     return render(request, 'restaurants_list.html', locals())
 
 
+# class CommentUpdateView(UpdateView):
+#     model = Comment
+#     form_class = CommentForm
+#     # fields = ['visitor', 'email', 'content']
+#     template_name = 'comment_update_form.html'
+
+#     def get_object(self, *args, **kwargs):
+#         obj = super(CommentUpdateView, self).get_object(*args, **kwargs)
+#         if not obj.visitor == str(self.request.user):
+#             raise PermissionDenied()
+#         else:
+#             return obj
+
+#     def get_success_url(self):
+#         return reverse('comment-view',
+#                        kwargs={'pk': self.object.restaurant.pk})
+
+
+class CommentUpdate(FormView, SingleObjectMixin):
+
+    form_class = CommentForm
+    template_name = 'comment_update_form.html'
+    # success_url = '/index/'
+    # initial = {'content': u'I don\'t have comment', 'visitor': u'temp'}
+
+    model = Comment         # provide by SingleObjectMixin
+    context_object_name = 'c'  # provide by SingleObjectMixin
+
+    # pk=self.kwargs.get('pk')
+    # self.objects.get(pk=self.kwargs.get('pk'))
+
+    def get_success_url(self):
+        self.object = self.get_object()
+        # print 'Comment.restaurant.pk = ', Comment.restaurant.pk
+        # print 'self.object.pk = ', self.object.restaurant.pk
+        return reverse('comment-view',
+                       kwargs={'pk': self.object.restaurant.pk})
+
+    def get_initial(self):
+        initial = super(CommentUpdate, self).get_initial()
+
+        # self.object = self.get_object()
+        comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
+        # comment = self.object.get(pk=self.kwargs.get('pk'))
+
+        initial['visitor'] = comment.visitor
+        initial['email'] = comment.email
+        initial['content'] = comment.content
+        # print "comment.visitor = ", comment.visitor
+        # print "comment.email = ", comment.email
+        # print "comment.content = ", comment.content
+
+        return initial
+
+    # def get_initial(self):
+    #     initial = super(CommentView, self).get_initial()
+    #     initial['visitor'] = self.request.user
+
+    #     if self.request.user.is_authenticated():
+    #         initial['email'] = self.request.user.email
+
+    #     return initial
+
+    def form_valid(self, form):
+
+        comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
+        # comment = self.object.objects.get(pk=self.kwargs.get('pk'))
+        c = Comment(
+            id=self.kwargs.get('pk'),
+            visitor=comment.visitor,
+            email=form.cleaned_data['email'],
+            content=form.cleaned_data['content'],
+            date_time=timezone.localtime(timezone.now()),
+            restaurant=comment.restaurant
+        )
+        c.save()
+
+        c.userUpVotes.clear()    # reset votes duo to edit comment
+        c.userDownVotes.clear()  # reset votes duo to edit comment
+        # Comment.objects.create(
+        #     visitor=form.cleaned_data['visitor'],
+        #     email=form.cleaned_data['email'],
+        #     content=form.cleaned_data['content'],
+        #     date_time=timezone.localtime(timezone.now()),
+        #     restaurant=self.get_object()
+        #     # don't need to add vote cause many to many field
+        # )
+
+        # ----------->equal to below<-----------
+        # context = self.get_context_data()
+        # context['form'] = self.form_class(initial=self.initial)
+        # return self.render_to_response(context)
+        # ----------->equal to below<-----------
+        # return self.render_to_response(self.get_context_data(
+        #     form=self.form_class(initial=self.initial))
+        # )
+        return HttpResponseRedirect(self.get_success_url())
+    # def get_context_data(self, **kwargs):
+    #     self.object = self.get_object()
+    #     return super(CommentView, self).get_context_data(
+    #         object=self.object, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        context = super(CommentUpdate, self).get_context_data(
+            object=self.object, **kwargs)
+
+        return context
+
+    def get_object(self, *args, **kwargs):
+        obj = super(CommentUpdate, self).get_object(*args, **kwargs)
+        if not obj.visitor == str(self.request.user):
+            raise PermissionDenied()
+        else:
+            return obj
+
+
+class CommentDelete(DeleteView):
+    model = Comment
+    # success_url = reverse_lazy('restaurants-list')
+    # success_url = HttpResponseRedirect("request.get_full_path()")
+
+    def get_object(self, *args, **kwargs):
+        obj = super(CommentDelete, self).get_object(*args, **kwargs)
+        if not obj.visitor == str(self.request.user):
+            raise PermissionDenied()
+        else:
+            return obj
+
+    def get_success_url(self):
+        return reverse('comment-view',
+                       kwargs={'pk': self.object.restaurant.pk})
+
+
 class CommentView(FormView, SingleObjectMixin):
 
     form_class = CommentForm
     template_name = 'comments.html'
-    success_url = '/comment/'
-    initial = {'content': u'I don\'t have comment'}
-    model = Restaurant
-    context_object_name = 'r'
+    # success_url = '/comment/'
+    # success_url = '/index/'
+    # initial = {'content': u'I don\'t have comment', 'visitor': u'temp'}
+
+    model = Restaurant         # provide by SingleObjectMixin
+    context_object_name = 'r'  # provide by SingleObjectMixin
+
+    # def get_queryset(self):
+    #     restaurant = Restaurant.objects.get(pk=self.kwargs.get('pk'))
+    #     comments = restaurant.comment_set.all()
+    #     for c in comments:
+    #         c.userUpVotes = c.userUpVotes.filter(
+    #             id=self.request.user.id).count()
+    #         c.userDownVotes = c.userDownVotes.filter(
+    #             id=self.request.user.id).count()
+    #     return comments
+
+    def get_success_url(self):
+        return reverse('comment-view',
+                       kwargs={'pk': self.kwargs.get('pk')})
+
+    def get_initial(self):
+        initial = super(CommentView, self).get_initial()
+        initial['visitor'] = self.request.user
+
+        if self.request.user.is_authenticated():
+            initial['email'] = self.request.user.email
+
+        return initial
 
     def form_valid(self, form):
         Comment.objects.create(
@@ -111,20 +284,76 @@ class CommentView(FormView, SingleObjectMixin):
             content=form.cleaned_data['content'],
             date_time=timezone.localtime(timezone.now()),
             restaurant=self.get_object()
-        )
-        return self.render_to_response(self.get_context_data(
-            form=self.form_class(initial=self.initial))
+            # don't need to add vote cause many to many field
         )
 
-    def get_context_data(self, **kwargs):
+        # ----------->equal to below<-----------
+        # context = self.get_context_data()
+        # context['form'] = self.form_class(initial=self.initial)
+        # return self.render_to_response(context)
+        # ----------->equal to below<-----------
+        # return self.render_to_response(self.get_context_data(
+        #     form=self.form_class(initial=self.initial))
+        # )
+        # return HttpResponseRedirect("")
+        return HttpResponseRedirect(self.get_success_url())
+    # def get_context_data(self, **kwargs):
+    #     self.object = self.get_object()
+    #     return super(CommentView, self).get_context_data(
+    #         object=self.object, **kwargs)
+
+    def get_context_data(self, **kwargs):  # overide context_object_name var
         self.object = self.get_object()
-        return super(CommentView, self).get_context_data(
+        context = super(CommentView, self).get_context_data(
             object=self.object, **kwargs)
 
-    @method_decorator(user_passes_test(user_can_comment,
-                                       login_url='/accounts/login/'))
-    def dispatch(self, request, *args, **kwargs):
-        return super(CommentView, self).dispatch(request, *args, **kwargs)
+        # thread = get_object_or_404(Comment, pk=23)
+        # # thread = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
+
+        # thisUserUpVote = thread.userUpVotes.filter(
+        #     id=self.request.user.id).count()
+        # context['thisUserUpVote'] = thisUserUpVote
+
+        # thisUserDownVote = thread.userDownVotes.filter(
+        #     id=self.request.user.id).count()
+        # context['thisUserDownVote'] = thisUserDownVote
+
+        # num_votes = thread.userUpVotes.count() - thread.userDownVotes.count()
+        # context['num_votes'] = num_votes
+
+        return context
+
+    def get_object(self, queryset=None):
+        obj = super(CommentView, self).get_object(queryset=queryset)
+        # print obj
+        # restaurant = self.object
+        # print restaurant
+        # restaurant = Restaurant.objects.get(pk=self.kwargs.get('pk'))
+        # print restaurant
+
+        # comments = self.object.comment_set.all()
+        comments = obj.comment_set.all()
+        # print comments
+        for c in comments:
+            c.thisUserUpVote = c.userUpVotes.filter(
+                id=self.request.user.id).count()
+            c.thisUserDownVote = c.userDownVotes.filter(
+                id=self.request.user.id).count()
+            # print c
+            # print "thisUserUpVote", c.thisUserUpVote
+            # print "thisUserDownVote", c.thisUserDownVote
+            c.save()
+        #     context['thisUserUpVote'] = thisUserUpVote
+        #     context['thisUserDownVote'] = thisUserDownVote
+        return obj
+
+    # -----if user.has_perm('restaurants.can_comment') required-----
+    # @method_decorator(user_passes_test(user_can_comment,
+    #                                    login_url='/accounts/login/'))
+    # def dispatch(self, request, *args, **kwargs):
+    #     return super(CommentView, self).dispatch(request, *args, **kwargs)
+    # -----if user.has_perm('restaurants.can_comment') required-----
+
 
 # def comment(request, restaurant_id):
 #     if restaurant_id:
@@ -147,13 +376,11 @@ class CommentView(FormView, SingleObjectMixin):
 #                 errors.append('* email format wrong, please retype')
 #         if not errors:
 #             Comment.objects.create(visitor=visitor, email=email,
-#                                    content=content, date_time=date_time,
 #                                    restaurant=r)
 #             visitor, email, content = ('', '', '')
 #         f = CommentForm()
 #     return render_to_response('comments.html',
 #                               RequestContext(request, locals()))
-
 
 
 # # @user_passes_test(user_can_comment, login_url='/accounts/login/')
@@ -182,6 +409,73 @@ class CommentView(FormView, SingleObjectMixin):
 #         f = CommentForm(initial={'content': 'No Comment.'})
 #     return render_to_response('comments.html',
 #                               RequestContext(request, locals()))
+
+
+def vote(request):
+    # thread_id = 23
+    thread_id = int(request.POST.get('id'))
+    vote_type = request.POST.get('type')
+    vote_action = request.POST.get('action')
+    # print "thread_id = ", thread_id
+    # print "vote_type = ", vote_type
+    # print "vote_action = ", vote_action
+
+    # thread = get_object_or_404(Thread, pk=thread_id)
+    thread = get_object_or_404(Comment, pk=thread_id)
+
+    thisUserUpVote = thread.userUpVotes.filter(id=request.user.id).count()
+    # print "thisUserUpVote", thisUserUpVote
+    thisUserDownVote = thread.userDownVotes.filter(id=request.user.id).count()
+    # print "thisUserDownVote", thisUserDownVote
+
+    if (vote_action == 'vote'):
+        if (thisUserUpVote == 0) and (thisUserDownVote == 0):
+            if (vote_type == 'up'):
+                # print "userUpVotes.add"
+                thread.userUpVotes.add(request.user)
+            elif (vote_type == 'down'):
+                thread.userDownVotes.add(request.user)
+            else:
+                # print "error-unknown vote type"
+                return HttpResponse('error-unknown vote type')
+        else:
+            # print "error - already voted"
+            return HttpResponse('error - already voted')
+    elif (vote_action == 'recall-vote'):
+        if (vote_type == 'up') and (thisUserUpVote == 1):
+            # print "userUpVotes.remove"
+            thread.userUpVotes.remove(request.user)
+        elif (vote_type == 'down') and (thisUserDownVote == 1):
+            thread.userDownVotes.remove(request.user)
+        else:
+            # print "error - unknown vote type or no vote to recall"
+            return HttpResponse(
+                'error - unknown vote type or no vote to recall')
+    else:
+        # print "error - bad action"
+        return HttpResponse('error - bad action')
+
+    num_votes = thread.userUpVotes.count() - thread.userDownVotes.count()
+
+    thisUserUpVote = thread.userUpVotes.filter(id=request.user.id).count()
+    # print "thisUserUpVote = ", thisUserUpVote
+    thisUserDownVote = thread.userDownVotes.filter(id=request.user.id).count()
+    # print "thisUserDownVote = ", thisUserDownVote
+
+    # print "num_votes = ", num_votes
+    # print "Here !!!!!!num_votes"
+
+    return HttpResponse(num_votes)
+    # return render(request, 'comments.html', {"num_votes": num_votes})
+
+
+def meta(request):
+    values = request.META.items()
+    values.sort()
+    html = []
+    for k, v in values:
+        html.append('<tr><td>{0}</td><td>{1}</td></tr>'.format(k, v))
+    return HttpResponse('<table>{0}</table>'.format('\n'.join(html)))
 
 
 def set_c(request):

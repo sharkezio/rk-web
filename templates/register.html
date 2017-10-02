@@ -1,16 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
-<body>
-    <h1>註冊新帳號</h1>
+{% extends "base.html" %}
 
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="註冊">    
-    </form>
+{% block title %} Register {% endblock %}
+
+{% block content %}
     
-</body>
-</html>
+    <form action="" method="post" class="form-default" style="width:50%;margin:auto;text-align:left">{% csrf_token %}
+        <h2>註冊新帳號</h2>    
+        <br>
+        {% for field in form %}
+        <!--        {{ form.as_p }}-->
+        <p class="form-group">
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+                <small style="color:grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+            {% endfor %}
+        </p>
+        {% endfor %}
+<!--        <input type="submit" value="註冊">    -->    
+        <br>
+        <button type="submit" class="btn btn-default">註冊</button>
+    </form>
+{% endblock %}

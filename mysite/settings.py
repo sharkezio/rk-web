@@ -28,7 +28,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # DEBUG = True
 DEBUG = False  # for deploy
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+# ALLOWED_HOSTS = ['127.0.0.1'z, 'localhost', 'testserver']
 # Allow all host headers
 # ALLOWED_HOSTS = ['*']
 
@@ -160,6 +160,6 @@ SESSION_SERIALIZER = ('django.contrib.sessions.serializers' +
 #     'django.core.context_processors.request',
 # )
 
-LOGIN_REDIRECT_URL = "/index/"
+# LOGIN_REDIRECT_URL = "/index/"
 
 # FIXTURE_DIRS = os.path.join(BASE_DIR, 'fixtures')

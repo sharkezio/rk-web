@@ -1,0 +1,20 @@
+.mvdot{
+/*
+    background: #ffb770;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    line-height: 100px;
+    font-size: 40px;
+    color: white;
+    border-radius: 50%;
+*/
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+    /*
+    top:calc(100%-150px);
+    left:calc(100%-150px);
+    */
+}
