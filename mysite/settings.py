@@ -12,28 +12,16 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-# from django.conf import global_settings
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = '6l2+&-aj=tf0&be37_%4rc1!&td=o_o@s&vc2ptl2n97a#lm4l'
-# SECRET_KEY = os.environ['SECRET_KEY']  # for deploy
-
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
 DEBUG = False  # for deploy
 
-# ALLOWED_HOSTS = ['127.0.0.1'z, 'localhost', 'testserver']
-# Allow all host headers
-# ALLOWED_HOSTS = ['*']
-
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -45,7 +33,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'restaurants',  # install restaurants application, django modify
-    'zoo',         # for test purpose
+    'zoo',         # for unit test practice purpose
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,57 +69,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-# sqlite
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-# -*default database*-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# # MySQL
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'db_restaurant',
-#         'USER': 'ranzo',
-#         'PASSWORD': '6014',
-#         'HOST': '',
-#         'PORT': '',
-#         # 'TEST': {'NAME': 'test_db_restaurant'},
-#     }
-# }
-
-# # Postgresql
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'db_restaurant',
-#         'USER': 'shark',
-#         'PASSWORD': '6014',
-#         'HOST': '',
-#         'PORT': '',
-#         # 'TEST': {'NAME': 'test_db_restaurant'},
-#     }
-# }
-
-# DATABASES = {'default': dj_database_url.config(
-#     default='postgres://localhost')}
-
-# DATABASES['default'] = dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-# LANGUAGE_CODE = 'en-us'
-# LANGUAGE_CODE = 'zh-TW'
 LANGUAGE_CODE = 'zh-hant'
 
-# TIME_ZONE = 'UTC'
 TIME_ZONE = 'Asia/Taipei'
 
 USE_I18N = True
@@ -140,11 +85,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 STATIC_ROOT = 'staticfiles'
 
 STATIC_URL = '/static/'
@@ -155,11 +98,3 @@ STATICFILES_DIRS = (
 
 SESSION_SERIALIZER = ('django.contrib.sessions.serializers' +
                       '.PickleSerializer')
-
-# TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-#     'django.core.context_processors.request',
-# )
-
-# LOGIN_REDIRECT_URL = "/index/"
-
-# FIXTURE_DIRS = os.path.join(BASE_DIR, 'fixtures')

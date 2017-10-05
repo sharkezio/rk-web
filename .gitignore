@@ -4,6 +4,7 @@
 *.pyc
 __pycache__/
 local_settings.py
+settings_test.py
 db.sqlite3
 media
 
@@ -20,3 +21,7 @@ assets
 
 ### clipboard ###
 clipboard.temp
+
+### files backup ###
+templates_backup
+static_backup

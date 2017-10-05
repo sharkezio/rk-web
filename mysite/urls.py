@@ -14,101 +14,42 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls import include, url
-from django.contrib import admin, auth
+from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 
-# --import specified view function from module--
-# from django.contrib.auth.views import login, logout
 
-# from views import welcome, index, register
-# from restaurants.views import menu, meta, list_restaurants, comment, set_c, \
-#     get_c, session_test, use_session
-
-
-# admin.autodiscover()
-
-# urlpatterns = [
-#     url(r'^admin/', include(admin.site.urls)),
-#     url(r'^menu/$', menu),
-#     url(r'^meta/$', meta),
-#     url(r'^welcome/$', welcome),
-#     url(r'^restaurants_list/$', login_required(list_restaurants)),
-#     url(r'^comment/(\d{1,5})/$', comment),
-#     url(r'^set_c/$', set_c),
-#     url(r'^get_c/$', get_c),
-#     url(r'^use_session/$', use_session),
-#     url(r'^session_test/$', session_test),
-#     # url(r'^accounts/login/$', login),
-#     url(r'^accounts/login/$', login, {'template_name': 'login.html'}),
-#     url(r'^accounts/logout/$', logout),
-#     url(r'^index/$', index),
-#     url(r'^accounts/register/$', register)
-# ]
-
-
-# # --import all module in order to call full view function name--
+# --import all module in order to call full view function name--
 import django.contrib.auth.views
-
 import views
-
 import restaurants.views
 
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-
     url(r'^menu/(?P<pk>\d+)/$', restaurants.views.MenuView.as_view()),
-    # url(r'^menu/$', restaurants.views.menu),
-    # url(r'^menu/(?P<id>\d{1,5})/$', restaurants.views.menu),
-
     url(r'^restaurants_list/$',
         login_required(restaurants.views.RestaurantsView.as_view()),
         name='restaurants-list'),
-    # url(r'^restaurants_list/$',
-    #     login_required(restaurants.views.list_restaurants)),
-    # url(r'^restaurants_list/$', restaurants.views.list,
-    #     {'model': restaurants.models.Restaurant}),
-
-    url(r'^users_list/$',
-        login_required(restaurants.views.list_users)),
-    # url(r'^users_list/$', restaurants.views.list,
-    #     {'model': auth.models.User}),
-
+    url(r'^users_list/$', login_required(restaurants.views.list_users)),
     url(r'^comment/(?P<pk>\d+)/$',
         restaurants.views.CommentView.as_view(), name='comment-view'),
-    # url(r'^comment/(?P<restaurant_id>\d{1,5})/$', restaurants.views.comment),
-    # url(r'^comment/(\d{1,5})/$', restaurants.views.comment),
-
     url(r'^accounts/login/$', views.custom_login, name='accounts-login'),
-    # url(r'^accounts/login/$', django.contrib.auth.views.login),
-    # url(r'^accounts/login/$', views.custom_login),
     url(r'^accounts/logout/$', django.contrib.auth.views.logout,
         name='accounts-logout'),
-    # url(r'^accounts/logout/$', views.logout, name='accounts-logout'),
-
-
     url(r'^welcome/$', views.welcome),
-
     url(r'^vote/$', restaurants.views.vote),
-
     url(r'^update/comment/(?P<pk>\d+)/$',
         restaurants.views.CommentUpdate.as_view(), name='comment-update'),
-
     url(r'^delete/comment/(?P<pk>\d+)/$',
         restaurants.views.CommentDelete.as_view(), name='comment-delete'),
-    # url(r'^index/$', views.index),
-    # url(r'^index/$', views.IndexView.as_view()),
-    # url(r'^index/$',
-    #     TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^$',
         TemplateView.as_view(template_name='index.html'), name='index'),
-
     url(r'^accounts/register/$', views.register)
 ]
 
-if settings.DEBUG:
+if settings.DEBUG:  # for practice usage
     urlpatterns += [
         url(r'^meta/$', restaurants.views.meta),
         url(r'^set_c/$', restaurants.views.set_c),

@@ -8,7 +8,6 @@
         <h2>註冊新帳號</h2>    
         <br>
         {% for field in form %}
-        <!--        {{ form.as_p }}-->
         <p class="form-group">
             {{ field.label_tag }}<br>
             {{ field }}
@@ -20,7 +19,6 @@
             {% endfor %}
         </p>
         {% endfor %}
-<!--        <input type="submit" value="註冊">    -->    
         <br>
         <button type="submit" class="btn btn-default">註冊</button>
     </form>

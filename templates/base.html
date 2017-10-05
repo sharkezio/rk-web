@@ -39,19 +39,6 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
-/*
-        .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-            background-color: #e5feff;
-            opacity: 0.1;
-            background-color: transparent;
-        }
-*/
-/*
-        .logo{
-            height: 32px;
-            margin: 9px 0px
-        }
-*/
         .logo-name{
             height: 36px;
             margin: 8px 25px 0px;
@@ -74,8 +61,6 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="{% url 'index' %}" style="padding:0px"><img src="{% static 'logo/name.png' %}" alt="name logo" class="logo-name"></a>
-<!--                    <img src="{% static 'logo/logo.png' %}" alt="chef logo" class="logo">-->
-<!--                    <a class="navbar-brand" href="{% url 'index' %}">MySite {{ request.get_full_path }}</a>-->
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     {% if request.user.is_authenticated %}

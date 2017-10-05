@@ -14,9 +14,6 @@ class Restaurant(models.Model):
 
 
 class FoodManager(models.Manager):
-    # def get_queryset(self):
-    #     return super(FoodManager, self).get_queryset().filter(
-    #         is_spicy=True)
 
     def sfood_order_by_price(self):
         return self.filter(is_spicy=True).order_by('price')
@@ -84,31 +81,10 @@ class Comment(models.Model):
 
     def get_total_votes(self):
         total = self.userUpVotes.count() - self.userDownVotes.count()
-        # total = 10
         return int(total)
 
-    # def this_user_up_vote(self):
-    #     thisUserUpVote = self.userUpVotes.filter(
-    #         id=self.request.user.id).count()
-    #     print "this_user_up_vote = ", thisUserUpVote
-    #     return int(thisUserUpVote)
-
-    # def this_user_down_vote(self):
-    #     thisUserDownVote = self.userDownVotes.filter(
-    #         id=self.request.user.id).count()
-    #     print "this_user_down_vote = ", thisUserDownVote
-    #     return int(thisUserDownVote)
-
     class Meta:
-        # ordering = ['date_time']
         ordering = ['id']
         permissions = (
             ("can_comment", "Can comment"),
         )
-
-# class Thread(models.Model):
-#     # ...
-#     userUpVotes = models.ManyToManyField(
-#         User, blank=True, related_name='threadUpVotes')
-#     userDownVotes = models.ManyToManyField(
-#         User, blank=True, related_name='threadDownVotes')

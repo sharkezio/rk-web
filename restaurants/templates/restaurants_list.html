@@ -14,7 +14,6 @@
 {% block content %}
 
                 <h2>餐廳列表</h2>
-                <!-- <form action="/menu/" method="get"> -->
                 <br>
                 <table class="table table-hover">
                     <tr>
@@ -23,28 +22,16 @@
                         <th>電話</th>
                         <th>地址</th>
                         <th>評價</th>
-<!--
-                        {% if perms.restaurants.can_comment %}
-                            <th>評價</th>
-                        {% endif %}
--->
                     </tr>
                     {% for r in restaurants %}
                     <tr>
-                        <!-- <td> <input type="radio" name="id" value="{{r.id}}"> </td> -->
                         <td><a href="/menu/{{r.id}}/" title="Menu link"><img src="{% static 'menu/menu-link.png' %}" alt="Menu Link" class="icon-24"></a></td>
                         <td> {{ r.name }}</td>
                         <td><a href="tel:{{ r.phone_number }}"><img src="{% static 'phone/phone-link.png' %}" alt="Phone Link" class="icon-24"/></a> {{ r.phone_number }}</td>
                         <td><a target="_blank" href="http://maps.google.com.tw/maps?q={{ r.address }}" title="Google Map link"><img src="{% static 'map/map-link.png' %}" alt="Map Link" class="icon-24"></a> {{ r.address }}</td>
                         <td><a href="/comment/{{r.id}}" title="Comment link"><img src="{% static 'comment/comment-link.png' %}" alt="Map Link" class="icon-24"></a> {{ r.comment_set.all|length }}條評價</td>
-<!--
-                        {% if perms.restaurants.can_comment %}
-                            <td><a href="/comment/{{r.id}}">comment</a></td>           
-                        {% endif %}           
--->
                     </tr>
                     {% endfor %}
                 </table>
-                <!-- <input type="submit" value="觀看menu" class="btn btn-default">
-                </form> -->
+
 {% endblock %}

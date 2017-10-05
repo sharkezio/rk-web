@@ -3,12 +3,6 @@
 {% block title %} Comment Update {% endblock %}
 
 {% block content %}
-<!--
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Update" />
-    </form>
--->
     <form action="" method="post" class="form-horizontal" role="form" style="width:25%;margin:auto;text-align:left">{% csrf_token %}
         <table>
             <tr>
@@ -46,10 +40,7 @@
                 <td><br></td>
             </tr>
             <tr>
-<!--               style="display: inline-table"-->
-<!--               style="display: block;margin: auto"-->
-                <td style="text-align: center"><input type="submit"  value="給予評價" class="btn btn-default">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<a class="btn btn-default" href="{% url 'comment-view' c.restaurant.id %}">Cancel</a></td>
-<!--                <td><a href="{% url 'comment-view' c.restaurant.id %}">取消</a></td>-->
+                <td style="text-align: center"><input type="submit"  value="給予評價" class="btn btn-default">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<a class="btn btn-default" href="{% url 'comment-view' c.restaurant.id %}">取消</a></td>
             </tr>
         </table>
     </form>
