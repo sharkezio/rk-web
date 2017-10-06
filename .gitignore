@@ -12,8 +12,6 @@ media
 *.DS_Store
 
 ### SQL migrate local ###
-contenttype.json
-everything_else.json
 datadump.json
 
 ### Heroku ignore (due to auto collectstatic) ###
@@ -23,5 +21,6 @@ assets
 clipboard.temp
 
 ### files backup ###
-templates_backup
-static_backup
+templates_backup/
+static_backup/
+>>>>>>> 9cac8c6... first commit
