@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %} Comment Update {% endblock %}
+
+{% block content %}
+    <form action="" method="post" class="form-horizontal" role="form" style="width:25%;margin:auto;text-align:left">{% csrf_token %}
+        <table>
+            <tr>
+                <th style="text-align:left"><label for="id_visitor">留言者：</label></th>
+            </tr>
+            <tr>
+                <td>{{ form.visitor }}</td>
+            </tr>
+            <tr>
+                <td style="color:red;">{{ form.visitor.errors }}</td>
+            </tr>
+            <tr>
+                <td><br></td>
+            </tr>
+            <tr>
+                <th style="text-align:left"><label for="id_email">電子信箱：</label></th>
+            </tr>
+            <tr>
+                <td>{{ form.email }}</td>
+            </tr>
+            <tr>
+                <td style="color:red;">{{ form.email.errors }}</td>
+            </tr>
+            <tr>
+                <td><br></td>
+            </tr>
+            <tr>
+                <th style="text-align:left"><label for="id_content">評價：</label></th>
+            </tr>
+            <tr>
+                <td>{{ form.content }}</td>
+                <td style="color:red;">{{ form.content.errors }}</td>
+            </tr>
+            <tr>
+                <td><br></td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><input type="submit"  value="給予評價" class="btn btn-default">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<a class="btn btn-default" href="{% url 'comment-view' c.restaurant.id %}">取消</a></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

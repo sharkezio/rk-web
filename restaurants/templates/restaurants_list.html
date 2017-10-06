@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %} Restaurants {% endblock %}
+
+{% block css %}
+    <style>
+        .icon-24 {
+            height: 24px;
+            width: 24px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+                <h2>餐廳列表</h2>
+                <br>
+                <table class="table table-hover">
+                    <tr>
+                        <th>菜單</th>
+                        <th>店名</th>
+                        <th>電話</th>
+                        <th>地址</th>
+                        <th>評價</th>
+                    </tr>
+                    {% for r in restaurants %}
+                    <tr>
+                        <td><a href="/menu/{{r.id}}/" title="Menu link"><img src="{% static 'menu/menu-link.png' %}" alt="Menu Link" class="icon-24"></a></td>
+                        <td> {{ r.name }}</td>
+                        <td><a href="tel:{{ r.phone_number }}"><img src="{% static 'phone/phone-link.png' %}" alt="Phone Link" class="icon-24"/></a> {{ r.phone_number }}</td>
+                        <td><a target="_blank" href="http://maps.google.com.tw/maps?q={{ r.address }}" title="Google Map link"><img src="{% static 'map/map-link.png' %}" alt="Map Link" class="icon-24"></a> {{ r.address }}</td>
+                        <td><a href="/comment/{{r.id}}" title="Comment link"><img src="{% static 'comment/comment-link.png' %}" alt="Map Link" class="icon-24"></a> {{ r.comment_set.all|length }}條評價</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+{% endblock %}

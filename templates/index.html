@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %} Restaurant King {% endblock %}
+
+{% block content %}
+    <div><img src="{% static 'favicons/android-chrome-512x512.png' %}" alt="restaurant king" height="128" width="128"></div>
+    <br>
+    <h1>歡迎來到餐廳王</h1>
+    <br>
+    {% if request.user.is_authenticated %}
+        <a href="/restaurants_list/"><p class="fontSize18"><strong>餐廳列表</strong></p></a>
+    {% else %}
+        <p class="fontSize18">您尚未登入喔~<a href="/accounts/login/"><strong>登入</strong></a></p>
+        <p class="fontSize18">若您還沒有帳號，請<a href='/accounts/register/'><strong>註冊</strong></a></p>
+        <p class="fontSize18">（可使用guest/guest參觀！）</p>
+    {% endif %}
+{% endblock %}

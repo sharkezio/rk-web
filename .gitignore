@@ -1,0 +1,25 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+settings_test.py
+db.sqlite3
+media
+
+### macOS ###
+*.DS_Store
+
+### SQL migrate local ###
+datadump.json
+
+### Heroku ignore (due to auto collectstatic) ###
+assets
+
+### clipboard ###
+clipboard.temp
+
+### files backup ###
+templates_backup/
+static_backup/
