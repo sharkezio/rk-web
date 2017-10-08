@@ -59,6 +59,9 @@ urlpatterns = [
     url(r'^browserconfig\.xml$',
         RedirectView.as_view(url='/static/favicons/browserconfig.xml',
                              permanent=True)),
+    url(r'^mstile-150x150\.png$',
+        RedirectView.as_view(url='/static/favicons/mstile-150x150.png',
+                             permanent=True)),
 ]
 
 if settings.DEBUG:  # for practice usage
