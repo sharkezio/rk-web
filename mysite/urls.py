@@ -16,7 +16,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 
 
 # --import all module in order to call full view function name--
@@ -46,7 +46,9 @@ urlpatterns = [
         restaurants.views.CommentDelete.as_view(), name='comment-delete'),
     url(r'^$',
         TemplateView.as_view(template_name='index.html'), name='index'),
-    url(r'^accounts/register/$', views.register)
+    url(r'^accounts/register/$', views.register),
+    url(r'^favicon\.ico$',
+        RedirectView.as_view(url='/static/favicon/favicon.ico')),
 ]
 
 if settings.DEBUG:  # for practice usage
