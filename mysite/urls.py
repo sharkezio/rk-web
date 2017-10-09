@@ -50,12 +50,14 @@ urlpatterns = [
     # url(r'^favicon\.ico$',
     #     RedirectView.as_view(url='/static/favicons/favicon.ico',
     #                          permanent=True)),
+    # favicon for Android Chrome
     url(r'^android-chrome-192x192\.png$',
         RedirectView.as_view(url='/static/favicons/android-chrome-192x192.png',
                              permanent=True)),
     url(r'^android-chrome-512x512\.png$',
         RedirectView.as_view(url='/static/favicons/android-chrome-512x512.png',
                              permanent=True)),
+    # favicon for Win8 and 10
     url(r'^browserconfig\.xml$',
         RedirectView.as_view(url='/static/favicons/browserconfig.xml',
                              permanent=True)),
