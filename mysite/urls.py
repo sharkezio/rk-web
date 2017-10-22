@@ -38,7 +38,6 @@ urlpatterns = [
     url(r'^accounts/login/$', views.custom_login, name='accounts-login'),
     url(r'^accounts/logout/$', django.contrib.auth.views.logout,
         name='accounts-logout'),
-    url(r'^welcome/$', views.welcome),
     url(r'^vote/$', restaurants.views.vote),
     url(r'^update/comment/(?P<pk>\d+)/$',
         restaurants.views.CommentUpdate.as_view(), name='comment-update'),
@@ -51,23 +50,24 @@ urlpatterns = [
     #     RedirectView.as_view(url='/static/favicons/favicon.ico',
     #                          permanent=True)),
     # favicon for Android Chrome
-    url(r'^android-chrome-192x192\.png$',
-        RedirectView.as_view(url='/static/favicons/android-chrome-192x192.png',
-                             permanent=True)),
-    url(r'^android-chrome-512x512\.png$',
-        RedirectView.as_view(url='/static/favicons/android-chrome-512x512.png',
-                             permanent=True)),
-    # favicon for Win8 and 10
-    url(r'^browserconfig\.xml$',
-        RedirectView.as_view(url='/static/favicons/browserconfig.xml',
-                             permanent=True)),
-    url(r'^mstile-150x150\.png$',
-        RedirectView.as_view(url='/static/favicons/mstile-150x150.png',
-                             permanent=True)),
+    # url(r'^android-chrome-192x192\.png$',
+    #     RedirectView.as_view(url='/static/favicons/android-chrome-192x192.png',
+    #                          permanent=True)),
+    # url(r'^android-chrome-512x512\.png$',
+    #     RedirectView.as_view(url='/static/favicons/android-chrome-512x512.png',
+    #                          permanent=True)),
+    # # favicon for Win8 and 10
+    # url(r'^browserconfig\.xml$',
+    #     RedirectView.as_view(url='/static/favicons/browserconfig.xml',
+    #                          permanent=True)),
+    # url(r'^mstile-150x150\.png$',
+    #     RedirectView.as_view(url='/static/favicons/mstile-150x150.png',
+    #                          permanent=True)),
 ]
 
 if settings.DEBUG:  # for practice usage
     urlpatterns += [
+        url(r'^welcome/$', views.welcome),
         url(r'^meta/$', restaurants.views.meta),
         url(r'^set_c/$', restaurants.views.set_c),
         url(r'^get_c/$', restaurants.views.get_c),
