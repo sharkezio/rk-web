@@ -46,23 +46,12 @@ urlpatterns = [
     url(r'^$',
         TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^accounts/register/$', views.register),
-    # url(r'^favicon\.ico$',
-    #     RedirectView.as_view(url='/static/favicons/favicon.ico',
-    #                          permanent=True)),
-    # favicon for Android Chrome
-    # url(r'^android-chrome-192x192\.png$',
-    #     RedirectView.as_view(url='/static/favicons/android-chrome-192x192.png',
-    #                          permanent=True)),
-    # url(r'^android-chrome-512x512\.png$',
-    #     RedirectView.as_view(url='/static/favicons/android-chrome-512x512.png',
-    #                          permanent=True)),
-    # # favicon for Win8 and 10
-    # url(r'^browserconfig\.xml$',
-    #     RedirectView.as_view(url='/static/favicons/browserconfig.xml',
-    #                          permanent=True)),
-    # url(r'^mstile-150x150\.png$',
-    #     RedirectView.as_view(url='/static/favicons/mstile-150x150.png',
-    #                          permanent=True)),
+    url(r'^android-chrome-192x192\.png$',  # favicon for Android Chrome
+        RedirectView.as_view(url='/static/favicons/android-chrome-192x192.png',
+                             permanent=True)),
+    url(r'^android-chrome-512x512\.png$',  # favicon for Android Chrome
+        RedirectView.as_view(url='/static/favicons/android-chrome-512x512.png',
+                             permanent=True)),
 ]
 
 if settings.DEBUG:  # for practice usage
